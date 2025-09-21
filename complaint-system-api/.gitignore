@@ -1,5 +1,15 @@
-*.zip
-.terraform/
 __pycache__/
 *.pyc
-.env
+*.pyo
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Lambda build artifacts
+/build/*.zip
+
+# OS files
+.DS_Store
+Thumbs.db
