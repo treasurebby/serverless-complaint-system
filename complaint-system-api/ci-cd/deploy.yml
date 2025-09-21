@@ -1,0 +1,31 @@
+# GitHub Actions workflow for deployment
+name: Deploy Complaint System API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+      - name: Terraform Init & Apply
+        run: |
+          cd terraform
+          terraform init
+          terraform apply -auto-approve
+      - name: Package Lambdas
+        run: |
+          cd lambdas
+          zip ../build/submit_complaint.zip submit_complaint.py utils.py
+          zip ../build/get_status.zip get_status.py utils.py
