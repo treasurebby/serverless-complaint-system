@@ -51,24 +51,21 @@ resource "aws_api_gateway_integration" "get_status_integration" {
     integration_http_method = "POST"
     type                    = "AWS_PROXY"
     uri                     = aws_lambda_function.get_status.invoke_arn
-}
-    http_method = aws_api_gateway_method.get_status_get.http_method
-    integration_http_method = "GET"
-    type = "AWS_PROXY"
-    uri = aws_lambda_function.get_status.invoke_arn
-    
+
+
 }
 
+
 #permissions so api gateway can call the lambda
-resource "aws_lambda_permissions" "allow_api_gw_submit" {
+resource "aws_lambda_permission" "allow_api_gw_submit" {
     statement_id = "AllowAPIGatewayInvokeSubmit"
     action = "lambda:InvokeFunction"
     function_name = aws_lambda_function.submit_complaint.function_name
     principal = "apigateway.amazonaws.com"
-    source_arn = "${aws_api_gateway_rest_api.complaint_api.execution_arn}/*/POST/submit_complaint
+    source_arn = "${aws_api_gateway_rest_api.complaint_api.execution_arn}/*/POST/submit_complaint"
 
 }
-resource "aws_lambda_permissions" "allow_api_gw_get" {
+resource "aws_lambda_permission" "allow_api_gw_get" {
     statement_id = "AllowAPIGatewayInvokeGet"
     action = "lambda:InvokeFunction"
     function_name = aws_lambda_function.get_status.function_name
@@ -80,9 +77,10 @@ resource "aws_lambda_permissions" "allow_api_gw_get" {
 #deployment + get_status_get
 resource "aws_api_gateway_deployment" "complaint_api" {
     rest_api_id = aws_api_gateway_rest_api.complaint_api.id
+
     depends_on = [
-        aws_api_gateway_integration.submit_complaint,
-        aws_api_gateway_integration.get_status
+        aws_api_gateway_integration.submit_complaint_integration,
+        aws_api_gateway_integration.get_status_integration
     ]
 }
 
