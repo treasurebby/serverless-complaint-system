@@ -1,7 +1,13 @@
-def handler(event, context):
-    """Handles complaint submission."""
-    # TODO: Implement complaint submission logic
+import json
+
+def lambda_handler(event, context):
+    body = json.loads(event['body'])
+    complaint_id = 123 #placeholder, normally saved in db
+    response = {
+        "status" : "submitted",
+        "complaint_id" : complaint_id
+    }
     return {
-        "statusCode": 200,
-        "body": "Complaint submitted successfully."
+        "statuscode" : 200,
+        "body" : json.dumps(response)
     }

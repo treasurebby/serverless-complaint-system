@@ -1,4 +1,4 @@
 output "api_url" {
   description = "API Gateway endpoint URL"
-  value       = module.api_gateway.url
+  value       = "${aws_api_gateway_deployment.complaint_api.invoke_url}"
 }
