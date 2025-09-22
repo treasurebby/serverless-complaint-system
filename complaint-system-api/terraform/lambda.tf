@@ -17,13 +17,3 @@ resource "aws_lambda_function" "get_status" {
     filename         = "${path.module}/../build/get_status.zip"
     source_code_hash = filebase64sha256("${path.module}/../build/get_status.zip")
 }
-
-
-resource "aws_lambda_function" "complaint_processor" {
-    function_name = "ComplaintProcessor"
-    role = aws_iam_role.lambda_role.invoke_arn
-    handler = "complaint_processor.lambda_handler"
-    runtime = "python3.12"
-    filename = "lambda.zip"
-    source_code_hash = filebase64sha256("lambda.zip")
-}
