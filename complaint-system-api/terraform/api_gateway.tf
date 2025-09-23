@@ -89,3 +89,27 @@ resource "aws_api_gateway_stage" "dev" {
     deployment_id = aws_api_gateway_deployment.complaint_api.id
     stage_name = "dev"
 }
+
+#log group for api gateway
+resource "aws_cloudwatch_log_group" "api_gw_logs" {
+    name = "/aws/api-gateway/complaints-api"
+    retention_in_days = 7
+}
+
+#enable logging at stage level 
+resource "aws_api_gateway_stage" "api_stage" {
+    stage_name = "prod"
+    rest_api_id = aws_api_gateway_rest_api.complaint_api.id
+    deployment_id = aws_api_gateway_deployment.complaint_api.id
+
+    access_log_settings {
+        destination_arn = aws_cloudwatch_log_group.api_gw_logs.arn
+            format = "$context.requestId - $context.identity.sourceIp - $context.httpMethod $context.resourcePath - $context.status"
+
+    }
+    depends_on = [aws_api_gateway_account.account_settings]
+}
+
+resource "aws_api_gateway_account" "account_settings" {
+  cloudwatch_role_arn = aws_iam_role.api_gateway_cloudwatch_role.arn
+}
